@@ -1,16 +1,22 @@
 import FirstSidebar from "@/features/notes/components/first-sidebar";
 import SecondSidebar from "@/features/notes/components/second-sidebar";
-import { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
 
-export default function NotesLayout({ children }: { children: ReactNode }) {
+export default function NotesLayout({
+    children,
+}: {
+    children: ReactNode;
+}) {
     return (
-        <div className="flex h-screen bg-white text-black">
+        <div className="flex min-h-screen">
 
-            {/* Sidebar 1 */}
-            <FirstSidebar />
+            <Suspense fallback={null}>
+                {/* Sidebar 1 */}
+                <FirstSidebar />
 
-            {/* Sidebar 2 - Notes List button */}
-            <SecondSidebar />
+                {/* Sidebar 2 - Notes List button */}
+                <SecondSidebar />
+            </Suspense>
 
             {/* Main Content - isi notes */}
             <main className="flex-1 p-10">
@@ -18,5 +24,5 @@ export default function NotesLayout({ children }: { children: ReactNode }) {
             </main>
 
         </div>
-    )
+    );
 }

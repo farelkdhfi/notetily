@@ -13,7 +13,7 @@ export function useUpdateProfile() {
     }: {
       fullName: string
       avatar?: File | null
-    }) => updateProfile(fullName, avatar),
+    }) => updateProfile(fullName, avatar ?? null),
 
     onSuccess: () => {
       queryClient.invalidateQueries({
