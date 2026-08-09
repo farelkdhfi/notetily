@@ -50,3 +50,27 @@ export async function createFolder({ name }: CreateFolderInput) {
 
   return data
 }
+
+export async function deleteFolder(id: string) {
+  const supabase = createClient()
+
+  // Jaga-jaga kalau ON DELETE SET NULL belum di-set di database,
+  // kita null-kan folder_id secara manual dulu sebelum hapus foldernya.
+  const { error: unlinkError } = await supabase
+    .from('notes')
+    .update({ folder_id: null })
+    .eq('folder_id', id)
+
+  if (unlinkError) {
+    throw unlinkError
+  }
+
+  const { error } = await supabase
+    .from('folders')
+    .delete()
+    .eq('id', id)
+
+  if (error) {
+    throw error
+  }
+}

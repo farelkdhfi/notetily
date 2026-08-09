@@ -3,18 +3,23 @@
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
-import { Plus, User } from 'lucide-react'
+import { Plus, User, Trash2 } from 'lucide-react'
 
 import { LogoutButton } from '@/features/auth/components/logout-btn'
 import { useQuery } from '@tanstack/react-query'
 import { getFolder } from '@/lib/api/folders'
 import CreateFolderModal from '@/features/folders/components/create-folder'
+import DeleteFolderModal from '@/features/folders/components/delete-folder-modal'
 
 type NoteFilter = 'all' | 'favorite' | 'archived'
 
 export default function FirstSidebar() {
-  const [isCreateNoteOpen, setIsCreateNoteOpen] = useState(false)
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false)
+
+  const [folderToDelete, setFolderToDelete] = useState<{
+    id: string
+    name: string
+  } | null>(null)
 
   const router = useRouter()
   const pathname = usePathname()
@@ -62,9 +67,9 @@ export default function FirstSidebar() {
   const getFolderClass = (folderId: string) => {
     const isActive = isNotesPage && currentFolderId === folderId
 
-    return `w-full rounded-xl px-3 py-2 text-left text-sm transition ${isActive
+    return `flex-1 truncate rounded-xl px-3 py-2 text-left text-sm transition ${isActive
       ? 'bg-neutral-900 font-medium text-white'
-      : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+      : 'text-gray-500 group-hover:text-gray-900'
       }`
   }
 
@@ -72,6 +77,17 @@ export default function FirstSidebar() {
     queryKey: ['folders'],
     queryFn: getFolder
   })
+
+  const handleDeleteClick = (
+    e: React.MouseEvent,
+    folderId: string,
+    folderName: string
+  ) => {
+    e.stopPropagation()
+    e.preventDefault()
+
+    setFolderToDelete({ id: folderId, name: folderName })
+  }
 
   return (
     <>
@@ -150,14 +166,28 @@ export default function FirstSidebar() {
             )}
 
             {data?.map(folder => (
-              <button
+              <div
                 key={folder.id}
-                type="button"
-                onClick={() => handleFolderChange(folder.id)}
-                className={getFolderClass(folder.id)}
+                className="group flex items-center gap-1"
               >
-                {folder.name}
-              </button>
+                <button
+                  type="button"
+                  onClick={() => handleFolderChange(folder.id)}
+                  className={getFolderClass(folder.id)}
+                >
+                  {folder.name}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={(e) => handleDeleteClick(e, folder.id, folder.name)}
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-gray-300 opacity-0 transition group-hover:opacity-100 hover:bg-red-50 hover:text-red-500"
+                  aria-label={`Delete folder ${folder.name}`}
+                  title="Delete folder"
+                >
+                  <Trash2 size={13} strokeWidth={1.8} />
+                </button>
+              </div>
             ))}
           </nav>
         </div>
@@ -192,6 +222,13 @@ export default function FirstSidebar() {
       <CreateFolderModal
         open={isCreateFolderOpen}
         onClose={() => setIsCreateFolderOpen(false)}
+      />
+
+      <DeleteFolderModal
+        open={folderToDelete !== null}
+        folderId={folderToDelete?.id ?? null}
+        folderName={folderToDelete?.name ?? null}
+        onClose={() => setFolderToDelete(null)}
       />
     </>
   )

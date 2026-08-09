@@ -7,6 +7,7 @@ import {
 } from "next/navigation"
 
 import { formatNoteDate } from "@/lib/utils/format-date"
+import { stripHtml } from "@/lib/utils/strip-html"
 
 interface NoteProps {
   note: {
@@ -36,9 +37,11 @@ export default function NoteButton({ note }: NoteProps) {
     ? `/notes/${note.id}?${queryString}`
     : `/notes/${note.id}`
 
+  const plainContent = stripHtml(note.content)
+
   const isDraft =
     (note.title.trim() === "" || note.title.trim() === "Untitled") &&
-    note.content.trim() === ""
+    plainContent === ""
 
   const dateLabel = formatNoteDate(note.updated_at ?? note.created_at)
 
@@ -84,7 +87,7 @@ export default function NoteButton({ note }: NoteProps) {
             isActive ? "text-white/60" : "text-gray-400"
           }`}
         >
-          {note.content || "No additional text"}
+          {plainContent || "No additional text"}
         </p>
       </div>
     </Link>

@@ -12,6 +12,7 @@ import ToggleFavoriteNotes from "@/features/notes/components/toggle-favorite-not
 import ButtonDeleteNote from "@/features/notes/components/btn-delete"
 import ToggleArchiveNotes from "@/features/notes/components/toggle-archive-notes"
 import ModalListFolder from "@/features/folders/components/modal-list-folder"
+import NoteEditor from "@/features/notes/components/note-editor"
 
 export default function NoteDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -269,13 +270,7 @@ export default function NoteDetailPage() {
 
       {/* Content */}
       <div className="max-w-2xl">
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="Start writing..."
-          rows={12}
-          className="w-full resize-none whitespace-pre-wrap text-[17px] leading-8 text-gray-600 outline-none placeholder:text-gray-300"
-        />
+        <NoteEditor content={content} onChange={setContent} />
       </div>
 
       <div className="mt-16 border-t border-gray-100 pt-5">

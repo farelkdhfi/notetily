@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { createNotes } from "@/lib/api/notes"
+import NoteEditor from "@/features/notes/components/note-editor"
 
 export default function NewNotePageContent() {
   const router = useRouter()
@@ -16,7 +17,6 @@ export default function NewNotePageContent() {
   const [content, setContent] = useState("")
   const [status, setStatus] = useState<"idle" | "saving" | "saved">("idle")
 
-  // Cegah create ganda kalau debounce ke-trigger dua kali
   const isCreatingRef = useRef(false)
 
   const createMutation = useMutation({
@@ -27,14 +27,15 @@ export default function NewNotePageContent() {
       const params = new URLSearchParams(searchParams.toString())
       const query = params.toString()
 
-      // Pindah diam-diam ke URL note yang sebenarnya, tanpa nambah history
       router.replace(`/notes/${newNote.id}${query ? `?${query}` : ""}`)
     },
   })
 
-  // Debounce: begitu title atau content berubah, tunggu 1 detik lalu create
   useEffect(() => {
-    const hasContent = title.trim().length > 0 || content.trim().length > 0
+    // content dari Tiptap kosong itu "<p></p>", bukan string kosong murni
+    const isContentEmpty =
+      content.trim() === "" || content.trim() === "<p></p>"
+    const hasContent = title.trim().length > 0 || !isContentEmpty
 
     if (!hasContent || isCreatingRef.current) {
       return
@@ -101,13 +102,7 @@ export default function NewNotePageContent() {
 
       {/* Content */}
       <div className="max-w-2xl">
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="Start writing..."
-          rows={12}
-          className="w-full resize-none whitespace-pre-wrap text-[17px] leading-8 text-gray-600 outline-none placeholder:text-gray-300"
-        />
+        <NoteEditor content={content} onChange={setContent} />
       </div>
     </article>
   )
