@@ -13,14 +13,15 @@ export default function NoteList() {
 
   const filter =
     (searchParams.get('filter') as NoteFilter) || 'all'
+  const folderId = searchParams.get('folder') ?? undefined
 
   const {
     data: notes = [],
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ['notes', filter],
-    queryFn: () => getNotes(filter),
+    queryKey: ['notes', filter, folderId],
+    queryFn: () => getNotes(filter, folderId),
   })
 
   if (isLoading) {
@@ -45,11 +46,13 @@ export default function NoteList() {
     return (
       <div className="px-3 py-8 text-center">
         <p className="text-sm text-gray-400">
-          {filter === 'favorite'
-            ? 'No favorite notes yet.'
-            : filter === 'archived'
-              ? 'No archived notes.'
-              : 'No notes yet.'}
+          {folderId
+            ? 'No notes in this folder.'
+            : filter === 'favorite'
+              ? 'No favorite notes yet.'
+              : filter === 'archived'
+                ? 'No archived notes.'
+                : 'No notes yet.'}
         </p>
       </div>
     )

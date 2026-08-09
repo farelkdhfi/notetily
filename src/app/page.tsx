@@ -71,7 +71,7 @@ export default function Home() {
       <section className="relative overflow-hidden px-6 py-24">
 
         {/* Background Image */}
-        <div className="pointer-events-none absolute inset-0  opacity-30">
+        <div className="pointer-events-none absolute inset-0  opacity-100">
           <Image
             src={heroImg}
             alt=""
@@ -80,18 +80,8 @@ export default function Home() {
           />
         </div>
 
-        {/* Background glow */}
-        <div className="pointer-events-none absolute left-1/2 top-32 -z-10 h-[500px] w-[700px] -translate-x-1/2 rounded-full bg-white blur-3xl" />
-
         {/* Hero Content */}
         <div className="relative z-10 mx-auto max-w-5xl text-center">
-
-          {/* Badge */}
-          {/* <div className="mx-auto mb-7 inline-flex items-center gap-2 rounded-full border border-black/[0.07] bg-white px-3.5 py-1.5 shadow-sm">
-            <span className="text-xs font-medium text-black/60">
-              A better way to organize your thoughts
-            </span>
-          </div> */}
 
           {/* Heading */}
           <h1 className="mx-auto max-w-4xl mt-16 text-[48px] font-semibold leading-[0.98] tracking-[-0.055em] sm:text-[72px] md:text-[88px]">
@@ -103,7 +93,7 @@ export default function Home() {
           </h1>
 
           {/* Description */}
-          <p className="mx-auto mt-7 max-w-xl text-base leading-7 text-black/50 sm:text-lg">
+          <p className="mx-auto mt-7 max-w-xl text-base leading-7 text-black/50 mix-blend-difference sm:text-lg">
             A simple, elegant space for your notes, ideas, and everything worth
             remembering. Designed to stay out of your way.
           </p>

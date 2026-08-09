@@ -21,9 +21,15 @@ export default function NoteButton({ note }: NoteProps) {
   const isActive = params.id === note.id
 
   const filter = searchParams.get("filter")
+  const folderId = searchParams.get("folder")
 
-  const href = filter
-    ? `/notes/${note.id}?filter=${filter}`
+  const query = new URLSearchParams()
+  if (filter) query.set("filter", filter)
+  if (folderId) query.set("folder", folderId)
+
+  const queryString = query.toString()
+  const href = queryString
+    ? `/notes/${note.id}?${queryString}`
     : `/notes/${note.id}`
 
   return (

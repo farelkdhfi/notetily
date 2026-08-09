@@ -29,9 +29,18 @@ export async function uploadAvatar(file: File, userId: string) {
 export async function getProfile() {
     const supabase = createClient()
 
+    const {
+        data: { user },
+    } = await supabase.auth.getUser()
+
+    if (!user) {
+        throw new Error('User belum login')
+    }
+
     const { data, error } = await supabase
         .from('profiles')
         .select('*')
+        .eq('id', user.id)
         .single()
 
     if (error) {

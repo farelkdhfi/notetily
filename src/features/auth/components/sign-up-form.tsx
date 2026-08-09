@@ -1,8 +1,11 @@
 'use client'
 
+import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
+import { ArrowRight } from 'lucide-react'
+
 import { signUpSchema, SignUpFormValues } from '@/lib/schemas/auth'
 import { signUp } from '@/lib/api/auth'
 
@@ -15,27 +18,206 @@ export function SignUpForm() {
   const mutation = useMutation({
     mutationFn: signUp,
     onSuccess: () => {
-      alert('Check your email to confirm your account!')
       form.reset()
     },
   })
 
+  const onSubmit = (values: SignUpFormValues) => {
+    mutation.mutate(values)
+  }
+
   return (
-    <form onSubmit={form.handleSubmit((values) => mutation.mutate(values))} className="flex flex-col gap-3">
-      <input {...form.register('email')} placeholder="Email" className="border p-2 rounded" />
-      {form.formState.errors.email && (
-        <p className="text-red-500 text-sm">{form.formState.errors.email.message}</p>
-      )}
+    <div className="min-h-screen bg-[#f7f7f5] text-[#1d1d1f]">
+      <div className="mx-auto flex min-h-screen max-w-7xl">
 
-      <input {...form.register('password')} type="password" placeholder="Password" className="border p-2 rounded" />
-      {form.formState.errors.password && (
-        <p className="text-red-500 text-sm">{form.formState.errors.password.message}</p>
-      )}
+        {/* Left - Brand / Visual */}
+        <div className="relative hidden w-1/2 overflow-hidden p-4 lg:block">
+          <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-[32px] bg-[#1d1d1f] p-10 text-white">
 
-      <button type="submit" disabled={mutation.isPending} className="bg-black text-white p-2 rounded disabled:opacity-50">
-        {mutation.isPending ? 'Signing up...' : 'Sign Up'}
-      </button>
-      {mutation.isError && <p className="text-red-500 text-sm">{mutation.error.message}</p>}
-    </form>
+            {/* Decorative circle - single, subtle, matches landing page orb motif */}
+            <div className="pointer-events-none absolute -right-40 -top-40 h-[420px] w-[420px] rounded-full bg-white/[0.035]" />
+
+            {/* Logo */}
+            <div className="relative z-10">
+              <Link
+                href="/"
+                className="text-[18px] font-bold tracking-[-0.02em] text-white"
+              >
+                Notetily.
+              </Link>
+            </div>
+
+            {/* Main message */}
+            <div className="relative z-10 max-w-lg">
+              <p className="mb-5 text-xs font-medium uppercase tracking-widest text-white/50">
+                Start capturing today.
+              </p>
+
+              <h1 className="text-5xl font-semibold leading-[0.98] tracking-[-0.045em] text-white">
+                Everything you need.
+                <br />
+                Nothing you don&apos;t.
+              </h1>
+
+              <p className="mt-7 max-w-md text-[15px] leading-7 text-white/60">
+                Capture ideas, organize your thoughts, and keep everything
+                that matters in one simple place.
+              </p>
+            </div>
+
+            {/* Bottom */}
+            <div className="relative z-10 flex items-center justify-between text-xs text-white/40">
+              <span>© 2026 Notetily.</span>
+              <span>Simple. Focused. Yours.</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Right - Sign up */}
+        <div className="flex w-full items-center justify-center px-6 py-12 lg:w-1/2 lg:px-16">
+          <div className="w-full max-w-md">
+
+            {/* Mobile logo */}
+            <div className="mb-12 lg:hidden">
+              <Link
+                href="/"
+                className="text-[18px] font-bold tracking-[-0.02em] text-[#1d1d1f]"
+              >
+                Notetily.
+              </Link>
+            </div>
+
+            {/* Heading */}
+            <div className="mb-10">
+              <p className="mb-3 text-xs font-medium uppercase tracking-widest text-black/40">
+                Get started
+              </p>
+
+              <h2 className="text-4xl font-semibold tracking-[-0.045em] text-[#1d1d1f]">
+                Create your account
+              </h2>
+
+              <p className="mt-3 text-sm leading-6 text-black/45">
+                It only takes a minute to get set up.
+              </p>
+            </div>
+
+            {/* Success state */}
+            {mutation.isSuccess ? (
+              <div className="rounded-2xl border border-black/[0.08] bg-white px-5 py-6">
+                <p className="text-sm font-medium text-[#1d1d1f]">
+                  Check your email
+                </p>
+                <p className="mt-2 text-sm leading-6 text-black/45">
+                  We sent a confirmation link to your inbox. Follow it to
+                  activate your account.
+                </p>
+              </div>
+            ) : (
+              <>
+                {/* Form */}
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-6"
+                >
+                  {/* Email */}
+                  <div>
+                    <label
+                      htmlFor="email"
+                      className="mb-2 block text-sm font-medium text-[#1d1d1f]/80"
+                    >
+                      Email
+                    </label>
+
+                    <input
+                      id="email"
+                      type="email"
+                      autoComplete="email"
+                      placeholder="you@example.com"
+                      {...form.register('email')}
+                      className="h-12 w-full rounded-2xl border border-black/[0.08] bg-white px-4 text-sm text-[#1d1d1f] outline-none transition placeholder:text-black/25 focus:border-black/20 focus:ring-4 focus:ring-black/[0.04]"
+                    />
+
+                    {form.formState.errors.email && (
+                      <p className="mt-2 text-xs text-red-500">
+                        {form.formState.errors.email.message}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Password */}
+                  <div>
+                    <label
+                      htmlFor="password"
+                      className="mb-2 block text-sm font-medium text-[#1d1d1f]/80"
+                    >
+                      Password
+                    </label>
+
+                    <input
+                      id="password"
+                      type="password"
+                      autoComplete="new-password"
+                      placeholder="Create a password"
+                      {...form.register('password')}
+                      className="h-12 w-full rounded-2xl border border-black/[0.08] bg-white px-4 text-sm text-[#1d1d1f] outline-none transition placeholder:text-black/25 focus:border-black/20 focus:ring-4 focus:ring-black/[0.04]"
+                    />
+
+                    {form.formState.errors.password && (
+                      <p className="mt-2 text-xs text-red-500">
+                        {form.formState.errors.password.message}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Server Error */}
+                  {mutation.isError && (
+                    <div className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3">
+                      <p className="text-sm text-red-600">
+                        {mutation.error.message}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Submit */}
+                  <button
+                    type="submit"
+                    disabled={mutation.isPending}
+                    className="group flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#1d1d1f] text-sm font-medium text-white shadow-lg shadow-black/10 transition hover:-translate-y-0.5 hover:bg-black active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+                  >
+                    {mutation.isPending ? 'Creating account...' : 'Create account'}
+                    {!mutation.isPending && (
+                      <ArrowRight
+                        size={16}
+                        className="transition-transform group-hover:translate-x-0.5"
+                      />
+                    )}
+                  </button>
+                </form>
+
+                {/* Sign in */}
+                <div className="mt-8 text-center">
+                  <p className="text-sm text-black/40">
+                    Already have an account?{' '}
+                    <Link
+                      href="/signin"
+                      className="font-medium text-[#1d1d1f] transition hover:underline"
+                    >
+                      Sign in
+                    </Link>
+                  </p>
+                </div>
+              </>
+            )}
+
+            {/* Footer */}
+            <p className="mt-12 text-center text-xs leading-5 text-black/35">
+              By continuing, you agree to our Terms of Service and Privacy
+              Policy.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }

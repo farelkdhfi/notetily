@@ -1,49 +1,79 @@
-
 'use client'
 
 import Link from 'next/link'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import { Plus, User } from 'lucide-react'
 
 import CreateNotesModal from '@/features/notes/components/create-notes-modal'
 import { LogoutButton } from '@/features/auth/components/logout-btn'
+import { useQuery } from '@tanstack/react-query'
+import { getFolder } from '@/lib/api/folders'
+import CreateFolderModal from '@/features/folders/components/create-folder'
 
 type NoteFilter = 'all' | 'favorite' | 'archived'
 
 export default function FirstSidebar() {
   const [isCreateNoteOpen, setIsCreateNoteOpen] = useState(false)
+  const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false)
 
   const router = useRouter()
-  const pathname = usePathname()
   const searchParams = useSearchParams()
 
-  const currentFilter =
-    (searchParams.get('filter') as NoteFilter) || 'all'
+  const currentFilter = (searchParams.get('filter') as NoteFilter) || 'all'
+  const currentFolderId = searchParams.get('folder')
 
   const handleFilterChange = (filter: NoteFilter) => {
+    const params = new URLSearchParams(searchParams.toString())
+
     if (filter === 'all') {
-      router.push('/notes')
-      return
+      params.delete('filter')
+    } else {
+      params.set('filter', filter)
     }
 
-    router.push(`/notes?filter=${filter}`)
+    // klik filter (All/Favorite/Archive) reset pilihan folder
+    params.delete('folder')
+
+    const query = params.toString()
+    router.push(query ? `/notes?${query}` : '/notes')
+  }
+
+  const handleFolderChange = (folderId: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('folder', folderId)
+    // pilih folder reset filter
+    params.delete('filter')
+
+    router.push(`/notes?${params.toString()}`)
   }
 
   const getNavClass = (filter: NoteFilter) => {
-    const isActive = currentFilter === filter
+    const isActive = currentFilter === filter && !currentFolderId
 
-    return `w-full rounded-xl px-3 py-2.5 text-left text-sm transition ${
-      isActive
-        ? 'bg-neutral-900 font-medium text-white'
-        : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
-    }`
+    return `w-full rounded-xl px-3 py-2.5 text-left text-sm transition ${isActive
+      ? 'bg-neutral-900 font-medium text-white'
+      : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+      }`
   }
+
+  const getFolderClass = (folderId: string) => {
+    const isActive = currentFolderId === folderId
+
+    return `w-full rounded-xl px-3 py-2 text-left text-sm transition ${isActive
+      ? 'bg-neutral-900 font-medium text-white'
+      : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+      }`
+  }
+
+  const { data, isError, isLoading } = useQuery({
+    queryKey: ['folders'],
+    queryFn: getFolder
+  })
 
   return (
     <>
-      <aside className="flex h-screen w-60 shrink-0 flex-col border-r border-gray-100 bg-neutral-100 px-4 py-6">
-
+      <aside className="flex h-screen w-64 flex-col border-r border-gray-100 bg-white px-3 py-6">
         {/* Logo */}
         <div className="mb-8 px-3">
           <Link
@@ -58,7 +88,7 @@ export default function FirstSidebar() {
         <button
           type="button"
           onClick={() => setIsCreateNoteOpen(true)}
-          className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-900 bg-white transition hover:bg-gray-100"
+          className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-sm border border-black/30 font-medium text-gray-900 bg-white transition hover:bg-gray-100"
         >
           <Plus
             size={17}
@@ -104,31 +134,41 @@ export default function FirstSidebar() {
 
         {/* Folders */}
         <div className="mt-10">
-          <p className="mb-3 px-3 text-[10px] font-medium uppercase tracking-[0.15em] text-gray-400">
-            Folders
-          </p>
+          <div className="mb-3 flex items-center justify-between px-3">
+            <p className="text-[10px] font-medium uppercase tracking-[0.15em] text-gray-400">
+              Folders
+            </p>
 
+            <button
+              type="button"
+              onClick={() => setIsCreateFolderOpen(true)}
+              className="flex h-5 w-5 items-center justify-center rounded-md text-gray-400 transition hover:bg-gray-100 hover:text-gray-900"
+              aria-label="Add folder"
+              title="Add folder"
+            >
+              <Plus size={14} strokeWidth={2} />
+            </button>
+          </div>
           <nav className="space-y-1">
-            <button
-              type="button"
-              className="w-full rounded-xl px-3 py-2 text-left text-sm text-gray-500 transition hover:bg-gray-50 hover:text-gray-900"
-            >
-              Personal
-            </button>
 
-            <button
-              type="button"
-              className="w-full rounded-xl px-3 py-2 text-left text-sm text-gray-500 transition hover:bg-gray-50 hover:text-gray-900"
-            >
-              Work
-            </button>
+            {isLoading && (
+              <p className="px-3 text-xs text-gray-400">Loading...</p>
+            )}
 
-            <button
-              type="button"
-              className="w-full rounded-xl px-3 py-2 text-left text-sm text-gray-500 transition hover:bg-gray-50 hover:text-gray-900"
-            >
-              Ideas
-            </button>
+            {isError && (
+              <p className="px-3 text-xs text-red-400">Failed to load folders</p>
+            )}
+
+            {data?.map(folder => (
+              <button
+                key={folder.id}
+                type="button"
+                onClick={() => handleFolderChange(folder.id)}
+                className={getFolderClass(folder.id)}
+              >
+                {folder.name}
+              </button>
+            ))}
           </nav>
         </div>
 
@@ -165,6 +205,11 @@ export default function FirstSidebar() {
       <CreateNotesModal
         open={isCreateNoteOpen}
         onClose={() => setIsCreateNoteOpen(false)}
+      />
+
+      <CreateFolderModal
+        open={isCreateFolderOpen}
+        onClose={() => setIsCreateFolderOpen(false)}
       />
     </>
   )

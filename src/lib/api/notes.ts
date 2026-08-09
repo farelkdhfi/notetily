@@ -3,30 +3,37 @@ import { createClient } from "../supabase/client";
 type NoteFilter = 'all' | 'favorite' | 'archived'
 
 export async function getNotes(
-  filter: NoteFilter = 'all'
+    filter: NoteFilter = 'all',
+    folderId?: string
 ) {
-  const supabase = createClient()
+    const supabase = createClient()
 
-  let query = supabase
-    .from('notes')
-    .select('*')
-    .order('created_at', { ascending: false })
+    let query = supabase
+        .from('notes')
+        .select('*')
+        .order('created_at', { ascending: false })
 
-  if (filter === 'favorite') {
-    query = query.eq('is_favorite', true)
-  }
+    // Filter status
+    if (filter === 'favorite') {
+        query = query.eq('is_favorite', true)
+    }
 
-  if (filter === 'archived') {
-    query = query.eq('is_archived', true)
-  }
+    if (filter === 'archived') {
+        query = query.eq('is_archived', true)
+    }
 
-  const { data, error } = await query
+    // Filter folder
+    if (folderId) {
+        query = query.eq('folder_id', folderId)
+    }
 
-  if (error) {
-    throw error
-  }
+    const { data, error } = await query
 
-  return data
+    if (error) {
+        throw error
+    }
+
+    return data
 }
 
 interface CreateNotesType {
@@ -42,8 +49,9 @@ export async function getNoteById(id: string) {
         .eq("id", id)
         .single()
 
-    console.log("DATA:", data)
-    console.log("ERROR:", error)
+    if (error) {
+        throw error
+    }
 
     return data
 }
@@ -77,12 +85,12 @@ export async function createNotes(values: CreateNotesType) {
 
 export async function toggleFavorite(is_favorite: boolean, noteId: string) {
     const supabase = createClient()
-    const {data, error} = await supabase
-    .from('notes')
-    .update({is_favorite: is_favorite})
-    .eq('id', noteId)
-    .select()
-    .single()
+    const { data, error } = await supabase
+        .from('notes')
+        .update({ is_favorite: is_favorite })
+        .eq('id', noteId)
+        .select()
+        .single()
 
     if (error) {
         throw error
@@ -94,12 +102,12 @@ export async function toggleFavorite(is_favorite: boolean, noteId: string) {
 
 export async function toggleArchive(is_archived: boolean, noteId: string) {
     const supabase = createClient()
-    const {data, error} = await supabase
-    .from('notes')
-    .update({is_archived: is_archived})
-    .eq('id', noteId)
-    .select()
-    .single()
+    const { data, error } = await supabase
+        .from('notes')
+        .update({ is_archived: is_archived })
+        .eq('id', noteId)
+        .select()
+        .single()
 
     if (error) {
         throw error
@@ -107,13 +115,43 @@ export async function toggleArchive(is_archived: boolean, noteId: string) {
 
     return data
 }
+
+export async function addNoteToFolder(noteId: string, folderId: string) {
+    const supabase = createClient()
+
+    const { data, error } = await supabase
+
+        .from('notes')
+        .update({
+            folder_id: folderId
+        })
+        .eq('id', noteId)
+        .select()
+        .single()
+
+    console.log('NOTE ID:', noteId)
+    console.log('FOLDER ID:', folderId)
+    console.log('DATA:', data)
+    console.log('ERROR:', error)
+
+    if (error) {
+        throw error
+    }
+
+    return data
+}
+
 export async function deleteNote(id: string) {
     const supabase = createClient()
 
-    const {error} = await supabase
-    .from('notes')
-    .delete()
-    .select()
-    .eq('id', id)
-    .single()
+    const { error } = await supabase
+        .from('notes')
+        .delete()
+        .select()
+        .eq('id', id)
+        .single()
+
+    if (error) {
+        throw error
+    }
 }

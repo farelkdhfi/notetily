@@ -8,7 +8,7 @@ export default function NotesLayout({
     children: ReactNode;
 }) {
     return (
-        <div className="flex min-h-screen">
+        <div className="flex min-h-screen bg-white">
 
             <Suspense fallback={null}>
                 {/* Sidebar 1 */}
@@ -22,7 +22,6 @@ export default function NotesLayout({
             <main className="flex-1 p-10">
                 {children}
             </main>
-
         </div>
     );
 }
