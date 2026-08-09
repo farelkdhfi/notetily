@@ -1,6 +1,6 @@
 'use client'
 
-import { X } from 'lucide-react'
+import { FolderPlus, X } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -83,21 +83,27 @@ export default function CreateFolderModal({
       >
         {/* Header */}
         <div className="flex items-start justify-between px-5 pt-5">
-          <div>
-            <h2 className="text-[15px] font-semibold tracking-tight text-gray-900">
-              Create folder
-            </h2>
+          <div className="flex items-start gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gray-100 text-gray-500">
+              <FolderPlus size={16} strokeWidth={1.8} />
+            </div>
 
-            <p className="mt-1 text-xs leading-5 text-gray-400">
-              Create a folder to organize your notes.
-            </p>
+            <div>
+              <h2 className="text-[15px] font-semibold tracking-tight text-gray-900">
+                Create folder
+              </h2>
+
+              <p className="mt-1 text-xs leading-5 text-gray-400">
+                Organize your notes into a new folder.
+              </p>
+            </div>
           </div>
 
           <button
             type="button"
             onClick={handleClose}
             disabled={isPending}
-            className="flex h-7 w-7 items-center justify-center rounded-lg text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 disabled:opacity-50"
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 disabled:opacity-50"
           >
             <X size={16} strokeWidth={1.8} />
           </button>

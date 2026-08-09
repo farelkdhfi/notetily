@@ -1,4 +1,4 @@
-
+// btn-delete.tsx
 "use client"
 
 import { deleteNote } from "@/lib/api/notes"
@@ -10,9 +10,7 @@ interface DeleteNoteProps {
   id: string
 }
 
-export default function ButtonDeleteNote({
-  id,
-}: DeleteNoteProps) {
+export default function ButtonDeleteNote({ id }: DeleteNoteProps) {
   const queryClient = useQueryClient()
   const router = useRouter()
 
@@ -20,14 +18,8 @@ export default function ButtonDeleteNote({
     mutationFn: (id: string) => deleteNote(id),
 
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["note", id],
-      })
-
-      queryClient.invalidateQueries({
-        queryKey: ["notes"],
-      })
-
+      queryClient.invalidateQueries({ queryKey: ["note", id] })
+      queryClient.invalidateQueries({ queryKey: ["notes"] })
       router.push("/notes")
     },
   })
@@ -37,28 +29,12 @@ export default function ButtonDeleteNote({
       type="button"
       disabled={deleteMutation.isPending}
       onClick={() => deleteMutation.mutate(id)}
-      className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-all duration-200 hover:bg-red-50 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+      className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
     >
-      {/* Icon */}
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-50 text-red-500 transition-colors group-hover:bg-red-100">
-        <Trash2
-          size={16}
-          strokeWidth={1.8}
-        />
-      </div>
-
-      {/* Label */}
-      <div className="flex min-w-0 flex-1 flex-col">
-        <span className="font-medium text-red-600">
-          {deleteMutation.isPending
-            ? "Deleting..."
-            : "Delete Note"}
-        </span>
-
-        <span className="text-[11px] text-red-400">
-          Permanently delete this note
-        </span>
-      </div>
+      <Trash2 size={15} strokeWidth={1.8} className="shrink-0" />
+      <span className="font-medium">
+        {deleteMutation.isPending ? "Deleting..." : "Delete note"}
+      </span>
     </button>
   )
 }

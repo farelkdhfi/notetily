@@ -1,11 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import { Plus, User } from 'lucide-react'
 
-import CreateNotesModal from '@/features/notes/components/create-notes-modal'
 import { LogoutButton } from '@/features/auth/components/logout-btn'
 import { useQuery } from '@tanstack/react-query'
 import { getFolder } from '@/lib/api/folders'
@@ -18,10 +17,15 @@ export default function FirstSidebar() {
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false)
 
   const router = useRouter()
+  const pathname = usePathname()
   const searchParams = useSearchParams()
+
+  const isNotesPage = pathname === '/notes' || pathname.startsWith('/notes/')
 
   const currentFilter = (searchParams.get('filter') as NoteFilter) || 'all'
   const currentFolderId = searchParams.get('folder')
+
+  const isProfileActive = pathname === '/profiles'
 
   const handleFilterChange = (filter: NoteFilter) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -32,7 +36,6 @@ export default function FirstSidebar() {
       params.set('filter', filter)
     }
 
-    // klik filter (All/Favorite/Archive) reset pilihan folder
     params.delete('folder')
 
     const query = params.toString()
@@ -42,14 +45,13 @@ export default function FirstSidebar() {
   const handleFolderChange = (folderId: string) => {
     const params = new URLSearchParams(searchParams.toString())
     params.set('folder', folderId)
-    // pilih folder reset filter
     params.delete('filter')
 
     router.push(`/notes?${params.toString()}`)
   }
 
   const getNavClass = (filter: NoteFilter) => {
-    const isActive = currentFilter === filter && !currentFolderId
+    const isActive = isNotesPage && currentFilter === filter && !currentFolderId
 
     return `w-full rounded-xl px-3 py-2.5 text-left text-sm transition ${isActive
       ? 'bg-neutral-900 font-medium text-white'
@@ -58,7 +60,7 @@ export default function FirstSidebar() {
   }
 
   const getFolderClass = (folderId: string) => {
-    const isActive = currentFolderId === folderId
+    const isActive = isNotesPage && currentFolderId === folderId
 
     return `w-full rounded-xl px-3 py-2 text-left text-sm transition ${isActive
       ? 'bg-neutral-900 font-medium text-white'
@@ -87,23 +89,15 @@ export default function FirstSidebar() {
         {/* New Note */}
         <button
           type="button"
-          onClick={() => setIsCreateNoteOpen(true)}
+          onClick={() => router.push('/notes/new')}
           className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-sm border border-black/30 font-medium text-gray-900 bg-white transition hover:bg-gray-100"
         >
-          <Plus
-            size={17}
-            strokeWidth={2}
-          />
-
-          <span>
-            New note
-          </span>
+          <Plus size={17} strokeWidth={2} />
+          <span>New note</span>
         </button>
 
         {/* Navigation */}
         <nav className="mt-5 space-y-1">
-
-          {/* All Notes */}
           <button
             type="button"
             onClick={() => handleFilterChange('all')}
@@ -112,7 +106,6 @@ export default function FirstSidebar() {
             All Notes
           </button>
 
-          {/* Favorites */}
           <button
             type="button"
             onClick={() => handleFilterChange('favorite')}
@@ -121,7 +114,6 @@ export default function FirstSidebar() {
             Favorites
           </button>
 
-          {/* Archive */}
           <button
             type="button"
             onClick={() => handleFilterChange('archived')}
@@ -129,7 +121,6 @@ export default function FirstSidebar() {
           >
             Archive
           </button>
-
         </nav>
 
         {/* Folders */}
@@ -150,7 +141,6 @@ export default function FirstSidebar() {
             </button>
           </div>
           <nav className="space-y-1">
-
             {isLoading && (
               <p className="px-3 text-xs text-gray-400">Loading...</p>
             )}
@@ -181,16 +171,14 @@ export default function FirstSidebar() {
           <nav className="space-y-1">
             <Link
               href="/profiles"
-              className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm text-gray-500 transition hover:bg-gray-50 hover:text-gray-900"
+              className={`flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm transition ${
+                isProfileActive
+                  ? 'bg-neutral-900 font-medium text-white'
+                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+              }`}
             >
-              <User
-                size={16}
-                strokeWidth={1.8}
-              />
-
-              <span>
-                Profile
-              </span>
+              <User size={16} strokeWidth={1.8} />
+              <span>Profile</span>
             </Link>
           </nav>
         </div>
@@ -200,12 +188,6 @@ export default function FirstSidebar() {
           <LogoutButton />
         </div>
       </aside>
-
-      {/* Create Note Modal */}
-      <CreateNotesModal
-        open={isCreateNoteOpen}
-        onClose={() => setIsCreateNoteOpen(false)}
-      />
 
       <CreateFolderModal
         open={isCreateFolderOpen}

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Check } from 'lucide-react'
 import z from 'zod'
 
 import { useUpdateProfile } from '@/features/profiles/hooks/use-update-profile'
@@ -19,9 +20,7 @@ export const updateProfileSchema = z.object({
     .optional(),
 })
 
-export type UpdateProfileFormValues = z.infer<
-  typeof updateProfileSchema
->
+export type UpdateProfileFormValues = z.infer<typeof updateProfileSchema>
 
 type Profile = {
   full_name: string
@@ -156,7 +155,7 @@ export default function FormUpdateProfile({
                 onClick={() =>
                   fileInputRef.current?.click()
                 }
-                className="mt-3 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50"
+                className="mt-3 rounded-xl border border-gray-200 px-3.5 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50"
               >
                 Change photo
               </button>
@@ -195,7 +194,7 @@ export default function FormUpdateProfile({
               id="full_name"
               {...register('full_name')}
               placeholder="Enter your name"
-              className="h-11 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-300 focus:border-gray-300 focus:bg-white focus:ring-4 focus:ring-gray-100"
+              className="h-11 w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 text-sm text-gray-900 outline-none transition placeholder:text-gray-300 focus:border-gray-400 focus:bg-white focus:ring-2 focus:ring-gray-100"
             />
 
             {errors.full_name && (
@@ -208,11 +207,14 @@ export default function FormUpdateProfile({
 
         {/* Footer */}
         <div className="flex items-center justify-between border-t border-gray-100 bg-gray-50/50 px-7 py-4">
-          <div>
+          <div className="flex items-center gap-1.5">
             {updateProfile.isSuccess && (
-              <p className="text-xs text-green-600">
-                Profile updated successfully.
-              </p>
+              <>
+                <Check size={13} strokeWidth={2.5} className="text-gray-900" />
+                <p className="text-xs text-gray-500">
+                  Profile updated
+                </p>
+              </>
             )}
 
             {updateProfile.isError && (
@@ -225,7 +227,7 @@ export default function FormUpdateProfile({
           <button
             type="submit"
             disabled={updateProfile.isPending}
-            className="rounded-lg bg-gray-900 px-4 py-2 text-xs font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-full bg-neutral-900 px-5 py-2.5 text-xs font-medium text-white transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {updateProfile.isPending
               ? 'Saving...'

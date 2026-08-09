@@ -3,10 +3,10 @@
 
 import { useEffect, useRef, useState } from "react"
 import { useParams } from "next/navigation"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { MoreHorizontal, FolderClosed } from "lucide-react"
 
-import { getNoteById } from "@/lib/api/notes"
+import { getNoteById, updateNotes } from "@/lib/api/notes"
 import { getFolder } from "@/lib/api/folders"
 import ToggleFavoriteNotes from "@/features/notes/components/toggle-favorite-notes"
 import ButtonDeleteNote from "@/features/notes/components/btn-delete"
@@ -15,12 +15,18 @@ import ModalListFolder from "@/features/folders/components/modal-list-folder"
 
 export default function NoteDetailPage() {
   const { id } = useParams<{ id: string }>()
+  const queryClient = useQueryClient()
 
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false)
 
+  const [title, setTitle] = useState("")
+  const [content, setContent] = useState("")
+  const [status, setStatus] = useState<"idle" | "saving" | "saved">("idle")
+
   const menuRef = useRef<HTMLDivElement>(null)
   const folderRef = useRef<HTMLDivElement>(null)
+  const isFirstLoad = useRef(true)
 
   const {
     data: note,
@@ -40,6 +46,45 @@ export default function NoteDetailPage() {
   const currentFolder = folders?.find(
     (folder) => folder.id === note?.folder_id
   )
+
+  const updateMutation = useMutation({
+    mutationFn: (values: { title: string; content: string }) =>
+      updateNotes(id, values),
+    onMutate: () => {
+      setStatus("saving")
+    },
+    onSuccess: () => {
+      setStatus("saved")
+      queryClient.invalidateQueries({ queryKey: ["notes"] })
+    },
+  })
+
+  // Isi form saat note pertama kali kebaca dari server
+  useEffect(() => {
+    if (note) {
+      setTitle(note.title)
+      setContent(note.content)
+      isFirstLoad.current = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [note?.id])
+
+  // Autosave dengan debounce, skip saat pertama kali data baru dimuat
+  useEffect(() => {
+    if (isFirstLoad.current) {
+      isFirstLoad.current = false
+      return
+    }
+
+    setStatus("idle")
+
+    const timeout = setTimeout(() => {
+      updateMutation.mutate({ title: title.trim() || "Untitled", content })
+    }, 1000)
+
+    return () => clearTimeout(timeout)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [title, content])
 
   // Close menu / folder modal when clicking outside
   useEffect(() => {
@@ -134,7 +179,13 @@ export default function NoteDetailPage() {
           </span>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          {/* Save status */}
+          <span className="text-xs text-gray-400">
+            {status === "saving" && "Saving..."}
+            {status === "saved" && "Saved"}
+          </span>
+
           {/* Add to folder */}
           <div ref={folderRef} className="relative">
             <button
@@ -200,9 +251,12 @@ export default function NoteDetailPage() {
 
       {/* Title */}
       <header>
-        <h1 className="text-4xl font-semibold leading-tight tracking-tight text-gray-900">
-          {note.title}
-        </h1>
+        <input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Untitled"
+          className="w-full text-4xl font-semibold leading-tight tracking-tight text-gray-900 outline-none placeholder:text-gray-300"
+        />
 
         <div className="mt-3 flex items-center gap-2 text-xs text-gray-400">
           <span>Note</span>
@@ -213,10 +267,15 @@ export default function NoteDetailPage() {
 
       <div className="my-10 h-px bg-gray-100" />
 
+      {/* Content */}
       <div className="max-w-2xl">
-        <p className="whitespace-pre-wrap text-[17px] leading-8 text-gray-600">
-          {note.content}
-        </p>
+        <textarea
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder="Start writing..."
+          rows={12}
+          className="w-full resize-none whitespace-pre-wrap text-[17px] leading-8 text-gray-600 outline-none placeholder:text-gray-300"
+        />
       </div>
 
       <div className="mt-16 border-t border-gray-100 pt-5">

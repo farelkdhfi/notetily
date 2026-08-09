@@ -15,11 +15,12 @@ export async function getNotes(
 
     // Filter status
     if (filter === 'favorite') {
-        query = query.eq('is_favorite', true)
-    }
-
-    if (filter === 'archived') {
+        query = query.eq('is_favorite', true).eq('is_archived', false)
+    } else if (filter === 'archived') {
         query = query.eq('is_archived', true)
+    } else {
+        // 'all' → semua notes yang BELUM di-archive
+        query = query.eq('is_archived', false)
     }
 
     // Filter folder
@@ -139,6 +140,28 @@ export async function addNoteToFolder(noteId: string, folderId: string) {
     }
 
     return data
+}
+
+interface UpdateNotesType {
+  title?: string
+  content?: string
+}
+
+export async function updateNotes(id: string, values: UpdateNotesType) {
+  const supabase = createClient()
+
+  const { data, error } = await supabase
+    .from('notes')
+    .update(values)
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (error) {
+    throw error
+  }
+
+  return data
 }
 
 export async function deleteNote(id: string) {

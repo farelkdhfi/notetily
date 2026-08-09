@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect } from 'react'
 import { getNotes } from '@/lib/api/notes'
 import { useQuery } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation'
@@ -8,7 +9,11 @@ import NoteButton from './note-btn'
 
 type NoteFilter = 'all' | 'favorite' | 'archived'
 
-export default function NoteList() {
+interface NoteListProps {
+  onCountChange?: (count: number) => void
+}
+
+export default function NoteList({ onCountChange }: NoteListProps) {
   const searchParams = useSearchParams()
 
   const filter =
@@ -23,6 +28,13 @@ export default function NoteList() {
     queryKey: ['notes', filter, folderId],
     queryFn: () => getNotes(filter, folderId),
   })
+
+  useEffect(() => {
+    if (!isLoading && !isError) {
+      onCountChange?.(notes.length)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [notes.length, isLoading, isError])
 
   if (isLoading) {
     return (
