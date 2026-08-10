@@ -13,6 +13,8 @@ import ButtonDeleteNote from "@/features/notes/components/btn-delete"
 import ToggleArchiveNotes from "@/features/notes/components/toggle-archive-notes"
 import ModalListFolder from "@/features/folders/components/modal-list-folder"
 import NoteEditor from "@/features/notes/components/note-editor"
+import RelatedNotes from "@/features/notes/components/related-notes"
+import ExportMarkdownButton from "@/features/notes/components/export-markdown-button"
 
 export default function NoteDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -169,11 +171,10 @@ export default function NoteDetailPage() {
 
           {/* Folder badge */}
           <span
-            className={`ml-1 flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition ${
-              currentFolder
+            className={`ml-1 flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition ${currentFolder
                 ? "bg-neutral-900 text-white"
                 : "bg-gray-50 text-gray-400"
-            }`}
+              }`}
           >
             <FolderClosed size={12} strokeWidth={2} />
             {currentFolder ? currentFolder.name : "No folder"}
@@ -235,6 +236,14 @@ export default function NoteDetailPage() {
                   <ToggleArchiveNotes note={note} />
                 </div>
 
+                <div
+                  onClick={() => setIsMenuOpen(false)}
+                  className="rounded-xl transition hover:bg-gray-50"
+                >
+                  <ExportMarkdownButton title={note.title} content={note.content} />
+                </div>
+
+
                 <div className="my-1 h-px bg-gray-100" />
 
                 {/* Delete */}
@@ -273,9 +282,7 @@ export default function NoteDetailPage() {
         <NoteEditor content={content} onChange={setContent} />
       </div>
 
-      <div className="mt-16 border-t border-gray-100 pt-5">
-        <p className="text-xs text-gray-300">End of note</p>
-      </div>
+      <RelatedNotes noteId={note.id} />
     </article>
   )
 }

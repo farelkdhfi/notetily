@@ -56,9 +56,12 @@ export default function Home() {
               Sign in
             </Link>
 
-            <button className="rounded-full bg-[#1d1d1f] px-4 py-2 text-sm font-medium text-white transition hover:bg-black">
+            <Link
+              href="/preview"
+              className="rounded-full bg-[#1d1d1f] px-4 py-2 text-sm font-medium text-white transition hover:bg-black"
+            >
               Get started
-            </button>
+            </Link>
           </div>
 
           <button className="flex h-9 w-9 items-center justify-center rounded-full bg-black/[0.04] sm:hidden">
@@ -100,13 +103,16 @@ export default function Home() {
 
           {/* CTA */}
           <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <button className="group flex h-12 items-center justify-center gap-2 rounded-full bg-[#1d1d1f] px-6 text-sm font-medium text-white shadow-lg shadow-black/10 transition hover:-translate-y-0.5 hover:bg-black">
+            <Link
+              href="/preview"
+              className="group flex h-12 items-center justify-center gap-2 rounded-full bg-[#1d1d1f] px-6 text-sm font-medium text-white shadow-lg shadow-black/10 transition hover:-translate-y-0.5 hover:bg-black"
+            >
               Start writing
               <ArrowRight
                 size={16}
                 className="transition-transform group-hover:translate-x-0.5"
               />
-            </button>
+            </Link>
 
             <button className="h-12 rounded-full border border-black/[0.08] bg-white px-6 text-sm font-medium shadow-sm transition hover:bg-black/[0.03]">
               Explore features
@@ -354,10 +360,13 @@ export default function Home() {
             Create your first note today. No credit card required.
           </p>
 
-          <button className="mt-8 inline-flex h-12 items-center gap-2 rounded-full bg-[#1d1d1f] px-6 text-sm font-medium text-white transition hover:bg-black">
+          <Link
+            href="/preview"
+            className="mt-8 inline-flex h-12 items-center gap-2 rounded-full bg-[#1d1d1f] px-6 text-sm font-medium text-white transition hover:bg-black"
+          >
             Get started
             <ArrowRight size={16} />
-          </button>
+          </Link>
         </div>
       </section>
 

@@ -57,6 +57,21 @@ export async function getNoteById(id: string) {
     return data
 }
 
+export async function getAllNotesForHealth() {
+  const supabase = createClient()
+
+  const { data, error } = await supabase
+    .from('notes')
+    .select('*')
+    .order('updated_at', { ascending: false })
+
+  if (error) {
+    throw error
+  }
+
+  return data
+}
+
 export async function createNotes(values: CreateNotesType) {
     const supabase = createClient()
 
@@ -177,4 +192,136 @@ export async function deleteNote(id: string) {
     if (error) {
         throw error
     }
+}
+
+
+export interface RelatedNote {
+  id: string
+  title: string
+  content: string
+}
+
+export async function getRelatedNotes(noteId: string) {
+  const supabase = createClient()
+
+  const { data, error } = await supabase
+    .from('note_relations')
+    .select(`
+      note_id_a,
+      note_id_b,
+      note_a:notes!note_relations_note_id_a_fkey(id, title, content),
+      note_b:notes!note_relations_note_id_b_fkey(id, title, content)
+    `)
+    .or(`note_id_a.eq.${noteId},note_id_b.eq.${noteId}`)
+
+  if (error) {
+    throw error
+  }
+
+  // Ambil note "lawan" dari pasangan, bukan diri sendiri
+  const related = data
+    .map((relation) => {
+      const isA = relation.note_id_a === noteId
+      return isA ? relation.note_b : relation.note_a
+    })
+    .filter(Boolean) as unknown as RelatedNote[]
+
+  return related
+}
+
+export async function addNoteRelation(noteIdA: string, noteIdB: string) {
+  const supabase = createClient()
+
+  // Normalisasi urutan biar konsisten sama constraint unique_pair
+  const [a, b] = [noteIdA, noteIdB].sort()
+
+  const { data, error } = await supabase
+    .from('note_relations')
+    .insert({ note_id_a: a, note_id_b: b })
+    .select()
+    .single()
+
+  if (error) {
+    throw error
+  }
+
+  return data
+}
+
+export async function removeNoteRelation(noteIdA: string, noteIdB: string) {
+  const supabase = createClient()
+
+  const [a, b] = [noteIdA, noteIdB].sort()
+
+  const { error } = await supabase
+    .from('note_relations')
+    .delete()
+    .eq('note_id_a', a)
+    .eq('note_id_b', b)
+
+  if (error) {
+    throw error
+  }
+}
+
+export async function searchNotesByTitle(query: string, excludeId: string) {
+  const supabase = createClient()
+
+  const { data, error } = await supabase
+    .from('notes')
+    .select('id, title, content')
+    .ilike('title', `%${query}%`)
+    .neq('id', excludeId)
+    .limit(8)
+
+  if (error) {
+    throw error
+  }
+
+  return data
+}
+
+export async function getAllNoteRelations() {
+  const supabase = createClient()
+
+  const { data, error } = await supabase
+    .from('note_relations')
+    .select('note_id_a, note_id_b')
+
+  if (error) {
+    throw error
+  }
+
+  return data
+}
+
+export interface SearchResultNote {
+  id: string
+  title: string
+  content: string
+  is_favorite: boolean
+  is_archived: boolean
+  updated_at: string
+  created_at: string
+}
+
+export async function searchNotes(query: string) {
+  const supabase = createClient()
+
+  if (!query.trim()) {
+    return []
+  }
+
+  const { data, error } = await supabase
+    .from('notes')
+    .select('*')
+    .or(`title.ilike.%${query}%,content.ilike.%${query}%`)
+    .order('updated_at', { ascending: false })
+    .limit(20)
+
+  if (error) {
+    throw error
+  }
+
+  return data as SearchResultNote[]
 }

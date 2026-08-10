@@ -1,4 +1,5 @@
 import FirstSidebar from "@/features/notes/components/first-sidebar";
+import QuickCapture from "@/features/notes/components/quick-capture";
 import SecondSidebar from "@/features/notes/components/second-sidebar";
 import { ReactNode, Suspense } from "react";
 
@@ -22,6 +23,8 @@ export default function NotesLayout({
             <main className="flex-1 p-10">
                 {children}
             </main>
+
+            <QuickCapture />
         </div>
     );
 }
