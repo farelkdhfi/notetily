@@ -13,10 +13,11 @@ import {
 } from '@/lib/schemas/auth'
 
 import { login } from '@/lib/api/auth'
+import { createClient } from '@/lib/supabase/client'
 
 export function SignInForm() {
   const router = useRouter()
-
+  const supabase = createClient()
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -24,6 +25,8 @@ export function SignInForm() {
       password: '',
     },
   })
+
+
 
   const mutation = useMutation({
     mutationFn: login,
@@ -36,6 +39,19 @@ export function SignInForm() {
 
   const onSubmit = (values: SignInFormValues) => {
     mutation.mutate(values)
+  }
+
+  const handleGoogleSignIn = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    })
+
+    if (error) {
+      console.error('Google sign in error:', error)
+    }
   }
 
   return (
@@ -200,6 +216,41 @@ export function SignInForm() {
                     className="transition-transform group-hover:translate-x-0.5"
                   />
                 )}
+              </button>
+
+              {/* Divider */}
+              <div className="relative py-1">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-black/[0.08]" />
+                </div>
+
+                <div className="relative flex justify-center">
+                  <span className="bg-white px-4 text-xs text-black/30">
+                    OR
+                  </span>
+                </div>
+              </div>
+
+              {/* Google */}
+              <button
+                type="button"
+                onClick={handleGoogleSignIn}
+                className="flex h-12 w-full items-center justify-center gap-3 rounded-full border border-black/[0.08] bg-white text-sm font-medium text-[#1d1d1f] transition hover:-translate-y-0.5 hover:border-black/[0.15] hover:bg-black/[0.02] active:translate-y-0"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M21.805 10.023H12V14.023H17.657C16.825 16.657 14.657 18.023 12 18.023C8.686 18.023 6 15.337 6 12.023C6 8.709 8.686 6.023 12 6.023C13.53 6.023 14.923 6.596 15.985 7.533L18.828 4.69C17.02 3.023 14.634 2.023 12 2.023C6.477 2.023 2 6.5 2 12.023C2 17.546 6.477 22.023 12 22.023C17.523 22.023 22 17.546 22 12.023C22 11.356 21.932 10.705 21.805 10.023Z"
+                    fill="currentColor"
+                  />
+                </svg>
+
+                Continue with Google
               </button>
             </form>
 
