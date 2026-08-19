@@ -2,259 +2,279 @@ import {
   ArrowRight,
   Check,
   Cloud,
-  Command,
   Lock,
   Menu,
-  Sparkles,
   Star,
   Zap,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import heroImg from "@/assets/hero.png"
+import heroImg from "@/assets/hero2.png";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#f7f7f5] text-[#1d1d1f]">
-      {/* Navbar */}
-      <header className="fixed inset-x-0 top-0 z-50">
-        <div className="mx-auto mt-4 flex max-w-6xl items-center justify-between rounded-full border border-black/[0.06] bg-white/75 px-5 py-3 shadow-sm backdrop-blur-xl">
-          {/* Logo */}
-          <a href="#" className="flex items-center gap-2">
-            <span className="text-[18px] font-bold tracking-[-0.02em]">
+    <main className="min-h-screen overflow-hidden bg-[#f5f5f2] text-[#171717]">
+      {/* ========================= NAVBAR ========================= */}
+      <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6">
+        <div className="mx-auto flex max-w-6xl items-center justify-between rounded-full border border-black/[0.07] bg-[#f8f8f5]/80 px-4 py-2.5 shadow-[0_12px_40px_rgba(0,0,0,0.05)] backdrop-blur-2xl sm:px-5">
+          <Link
+            href="/"
+            className="flex items-center gap-2.5"
+          >
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#171717]">
+              <div className="h-2.5 w-2.5 rounded-full bg-white" />
+            </div>
+
+            <span className="text-[15px] font-semibold tracking-[-0.025em]">
               Notetily.
             </span>
-          </a>
+          </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden items-center gap-8 md:flex">
-            <a
-              href="#features"
-              className="text-sm text-black/55 transition hover:text-black"
-            >
-              Features
-            </a>
-
-            <a
-              href="#about"
-              className="text-sm text-black/55 transition hover:text-black"
-            >
-              About
-            </a>
-
-            <a
-              href="#pricing"
-              className="text-sm text-black/55 transition hover:text-black"
-            >
-              Pricing
-            </a>
+          <nav className="hidden items-center gap-9 md:flex">
+            {["Features", "About", "Pricing"].map((item) => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                className="text-[12px] font-medium tracking-[-0.01em] text-black/45 transition hover:text-black"
+              >
+                {item}
+              </a>
+            ))}
           </nav>
 
-          {/* Right */}
-          <div className="hidden items-center gap-3 sm:flex">
-            <Link href='/signin' className="px-3 text-sm font-medium text-black/60 transition hover:text-black">
+          <div className="hidden items-center gap-2 sm:flex">
+            <Link
+              href="/signin"
+              className="rounded-full px-4 py-2 text-[12px] font-medium text-black/55 transition hover:text-black"
+            >
               Sign in
             </Link>
 
             <Link
               href="/preview"
-              className="rounded-full bg-[#1d1d1f] px-4 py-2 text-sm font-medium text-white transition hover:bg-black"
+              className="group flex items-center gap-2 rounded-full bg-[#171717] px-4 py-2.5 text-[12px] font-medium text-white shadow-[0_6px_20px_rgba(0,0,0,0.14)] transition duration-300 hover:-translate-y-0.5 hover:bg-black"
             >
               Get started
+              <ArrowRight
+                size={13}
+                className="transition-transform group-hover:translate-x-0.5"
+              />
             </Link>
           </div>
 
-          <button className="flex h-9 w-9 items-center justify-center rounded-full bg-black/[0.04] sm:hidden">
-            <Menu size={18} />
+          <button className="flex h-9 w-9 items-center justify-center rounded-full bg-black/[0.045] sm:hidden">
+            <Menu size={17} strokeWidth={1.8} />
           </button>
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="relative overflow-hidden px-6 py-24">
-
-        {/* Background Image */}
-        <div className="pointer-events-none absolute inset-0  opacity-100">
+      {/* ========================= HERO ========================= */}
+      <section className="relative overflow-hidden px-5 pb-20 pt-32 sm:px-8 sm:pb-28 sm:pt-40">
+        {/* Hero Background Image */}
+        <div className="pointer-events-none absolute inset-0">
           <Image
             src={heroImg}
             alt=""
             fill
-            className="object-cover"
+            priority
+            className="object-cover object-center"
           />
+
+          {/* Soft overlay supaya text tetap readable */}
+          <div className="absolute inset-0 bg-[#f5f5f2]/55" />
+
+          {/* Subtle white ambient glow */}
+          <div className="absolute left-1/2 top-0 h-[520px] w-[900px] -translate-x-1/2 rounded-full bg-white/40 blur-[120px]" />
+
+          {/* Bottom fade */}
+          <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#f5f5f2] to-transparent" />
         </div>
 
-        {/* Hero Content */}
-        <div className="relative z-10 mx-auto max-w-5xl text-center">
+        <div className="relative z-10 mx-auto max-w-6xl">
+          <div className="mx-auto max-w-4xl text-center">
+            <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-black/[0.07] bg-white/65 px-3.5 py-2 shadow-sm backdrop-blur-xl">
+              <span className="h-1.5 w-1.5 rounded-full bg-black" />
 
-          {/* Heading */}
-          <h1 className="mx-auto max-w-4xl mt-16 text-[48px] font-semibold leading-[0.98] tracking-[-0.055em] sm:text-[72px] md:text-[88px]">
-            Your thoughts,
-            <br />
-            <span className="text-black/35">
-              beautifully organized.
-            </span>
-          </h1>
-
-          {/* Description */}
-          <p className="mx-auto mt-7 max-w-xl text-base leading-7 text-black/50 mix-blend-difference sm:text-lg">
-            A simple, elegant space for your notes, ideas, and everything worth
-            remembering. Designed to stay out of your way.
-          </p>
-
-          {/* CTA */}
-          <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link
-              href="/preview"
-              className="group flex h-12 items-center justify-center gap-2 rounded-full bg-[#1d1d1f] px-6 text-sm font-medium text-white shadow-lg shadow-black/10 transition hover:-translate-y-0.5 hover:bg-black"
-            >
-              Start writing
-              <ArrowRight
-                size={16}
-                className="transition-transform group-hover:translate-x-0.5"
-              />
-            </Link>
-
-            <button className="h-12 rounded-full border border-black/[0.08] bg-white px-6 text-sm font-medium shadow-sm transition hover:bg-black/[0.03]">
-              Explore features
-            </button>
-          </div>
-        </div>
-
-        {/* App Preview */}
-        <div className="mx-auto mt-20 z-10 relative max-w-5xl">
-          <div className="overflow-hidden rounded-[28px] border border-black/[0.08] bg-white shadow-[0_30px_80px_rgba(0,0,0,0.10)]">
-            {/* Window Header */}
-            <div className="flex h-12 items-center border-b border-black/[0.06] px-5">
-              <div className="flex gap-1.5">
-                <div className="h-2.5 w-2.5 rounded-full bg-black/10" />
-                <div className="h-2.5 w-2.5 rounded-full bg-black/10" />
-                <div className="h-2.5 w-2.5 rounded-full bg-black/10" />
-              </div>
-
-              <div className="absolute left-1/2 -translate-x-1/2 text-xs font-medium text-black/35">
-                Notetily.
-              </div>
+              <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-black/45">
+                A quieter way to think
+              </span>
             </div>
 
-            {/* App */}
-            <div className="grid min-h-[520px] grid-cols-1 md:grid-cols-[220px_1fr]">
-              {/* Sidebar */}
-              <aside className="hidden border-r border-black/[0.06] bg-[#fafafa] p-4 md:block">
-                <button className="mb-5 flex w-full items-center gap-2 rounded-xl bg-black/[0.05] px-3 py-2 text-left text-sm font-medium">
-                  <span className="text-lg">＋</span>
-                  New note
-                </button>
+            <h1 className="mx-auto text-[52px] font-semibold leading-[0.94] tracking-[-0.065em] sm:text-[76px] md:text-[94px] lg:text-[104px]">
+              Your thoughts,
+              <br />
+              <span className="text-black/[0.22]">
+                beautifully organized.
+              </span>
+            </h1>
 
-                <div className="space-y-1">
-                  <SidebarItem title="All Notes" active />
-                  <SidebarItem title="Favorites" />
-                  <SidebarItem title="Archive" />
+            <p className="mx-auto mt-8 max-w-xl text-[15px] leading-7 tracking-[-0.01em] text-black/45 sm:text-[16px]">
+              A calm, beautifully designed space for notes, ideas, plans,
+              and everything worth remembering.
+            </p>
+
+            <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Link
+                href="/preview"
+                className="group flex h-12 items-center gap-2 rounded-full bg-[#171717] px-6 text-[12px] font-medium text-white shadow-[0_14px_35px_rgba(0,0,0,0.16)] transition duration-300 hover:-translate-y-1 hover:bg-black"
+              >
+                Start writing
+
+                <ArrowRight
+                  size={14}
+                  className="transition-transform group-hover:translate-x-0.5"
+                />
+              </Link>
+
+              <a
+                href="#features"
+                className="flex h-12 items-center rounded-full border border-black/[0.08] bg-white/70 px-6 text-[12px] font-medium text-black/65 shadow-sm backdrop-blur-xl transition duration-300 hover:-translate-y-0.5 hover:bg-white"
+              >
+                Explore features
+              </a>
+            </div>
+          </div>
+
+          {/* ================= APP PREVIEW ================= */}
+          <div className="relative mx-auto mt-20 max-w-5xl sm:mt-24">
+            {/* Glow */}
+            <div className="absolute -inset-8 -z-10 rounded-[3rem] bg-white/60 blur-3xl" />
+
+            <div className="overflow-hidden rounded-[28px] border border-black/[0.08] bg-white shadow-[0_45px_120px_rgba(0,0,0,0.13)]">
+              {/* Browser bar */}
+              <div className="flex h-11 items-center border-b border-black/[0.06] bg-[#fafaf8] px-4">
+                <div className="flex gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-black/10" />
+                  <span className="h-2 w-2 rounded-full bg-black/10" />
+                  <span className="h-2 w-2 rounded-full bg-black/10" />
                 </div>
 
-                <div className="mt-8 px-3">
-                  <p className="mb-3 text-[10px] font-semibold uppercase tracking-widest text-black/30">
-                    Folders
-                  </p>
-
-                  <div className="space-y-3 text-sm text-black/50">
-                    <p>Personal</p>
-                    <p>Work</p>
-                    <p>Ideas</p>
-                  </div>
+                <div className="absolute left-1/2 -translate-x-1/2 text-[10px] font-medium tracking-wide text-black/25">
+                  notetily.app
                 </div>
-              </aside>
+              </div>
 
-              {/* Notes List */}
-              <div className="grid grid-cols-1 md:grid-cols-[240px_1fr]">
-                <div className="border-r border-black/[0.06] p-5">
-                  <div className="mb-6 flex items-center justify-between">
-                    <h2 className="text-lg font-semibold tracking-tight">
-                      Notes
-                    </h2>
+              <div className="grid min-h-[540px] grid-cols-1 md:grid-cols-[210px_1fr]">
+                {/* Sidebar */}
+                <aside className="hidden border-r border-black/[0.055] bg-[#f9f9f7] p-4 md:block">
+                  <button className="mb-6 flex w-full items-center justify-center gap-2 rounded-xl bg-[#171717] px-3 py-2.5 text-[11px] font-medium text-white shadow-sm">
+                    <span className="text-sm">+</span>
+                    New note
+                  </button>
 
-                    <span className="text-xs text-black/30">12 notes</span>
+                  <div className="space-y-1">
+                    <SidebarItem title="All Notes" active />
+                    <SidebarItem title="Favorites" />
+                    <SidebarItem title="Archive" />
                   </div>
 
-                  <div className="space-y-2">
-                    <NoteItem
-                      title="Ideas for the weekend"
-                      description="A few things I want to..."
-                      time="9:42 AM"
-                      active
-                    />
+                  <div className="mt-10 px-3">
+                    <p className="mb-4 text-[9px] font-semibold uppercase tracking-[0.2em] text-black/25">
+                      Folders
+                    </p>
 
-                    <NoteItem
-                      title="Project ideas"
-                      description="Build something simple..."
-                      time="Yesterday"
-                    />
-
-                    <NoteItem
-                      title="Books to read"
-                      description="The creative act..."
-                      time="Aug 6"
-                    />
-
-                    <NoteItem
-                      title="Things to remember"
-                      description="Keep things simple..."
-                      time="Aug 4"
-                    />
+                    <div className="space-y-3 text-[11px] text-black/40">
+                      <p>Personal</p>
+                      <p>Work</p>
+                      <p>Ideas</p>
+                    </div>
                   </div>
-                </div>
+                </aside>
 
-                {/* Editor */}
-                <div className="p-7 sm:p-10">
-                  <div className="mx-auto max-w-2xl">
-                    <div className="mb-8 flex items-center justify-between">
-                      <span className="text-xs text-black/30">
-                        Updated just now
+                {/* Content */}
+                <div className="grid grid-cols-1 md:grid-cols-[245px_1fr]">
+                  <div className="border-r border-black/[0.055] p-5">
+                    <div className="mb-6 flex items-center justify-between">
+                      <h2 className="text-[16px] font-semibold tracking-[-0.025em]">
+                        Notes
+                      </h2>
+
+                      <span className="text-[9px] uppercase tracking-wider text-black/25">
+                        12 notes
                       </span>
-
-                      <button className="rounded-full px-3 py-1.5 text-xs text-black/40 hover:bg-black/[0.04]">
-                        •••
-                      </button>
                     </div>
 
-                    <h2 className="text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">
-                      Ideas for the weekend
-                    </h2>
+                    <div className="space-y-1.5">
+                      <NoteItem
+                        title="Ideas for the weekend"
+                        description="A few things I want to..."
+                        time="9:42"
+                        active
+                      />
 
-                    <p className="mt-7 text-[15px] leading-8 text-black/55">
-                      Sometimes the best weekends are the ones without a
-                      complicated plan.
-                    </p>
+                      <NoteItem
+                        title="Project ideas"
+                        description="Build something simple..."
+                        time="Yesterday"
+                      />
 
-                    <p className="mt-5 text-[15px] leading-8 text-black/55">
-                      Go somewhere new. Read a book. Take a long walk. Put the
-                      phone away for a while and let the mind wander.
-                    </p>
+                      <NoteItem
+                        title="Books to read"
+                        description="The creative act..."
+                        time="Aug 6"
+                      />
 
-                    <div className="my-8 h-px bg-black/[0.06]" />
+                      <NoteItem
+                        title="Things to remember"
+                        description="Keep things simple..."
+                        time="Aug 4"
+                      />
+                    </div>
+                  </div>
 
-                    <p className="text-[15px] leading-8 text-black/55">
-                      <span className="font-medium text-black">
-                        Things worth doing:
-                      </span>
-                    </p>
+                  {/* Editor */}
+                  <div className="p-7 sm:p-10">
+                    <div className="mx-auto max-w-xl">
+                      <div className="mb-10 flex items-center justify-between">
+                        <span className="text-[9px] uppercase tracking-[0.16em] text-black/25">
+                          Updated just now
+                        </span>
 
-                    <div className="mt-4 space-y-3">
-                      {[
-                        "Visit a new coffee shop",
-                        "Finish the book I'm reading",
-                        "Take some photos",
-                      ].map((item) => (
-                        <div
-                          key={item}
-                          className="flex items-center gap-3 text-sm text-black/55"
-                        >
-                          <div className="flex h-5 w-5 items-center justify-center rounded-full border border-black/15">
-                            <Check size={11} />
+                        <button className="flex h-7 w-7 items-center justify-center rounded-full text-xs text-black/30 transition hover:bg-black/[0.04]">
+                          •••
+                        </button>
+                      </div>
+
+                      <h2 className="text-3xl font-semibold tracking-[-0.05em] sm:text-4xl">
+                        Ideas for the weekend
+                      </h2>
+
+                      <div className="mt-8 space-y-5">
+                        <p className="text-[14px] leading-7 text-black/50">
+                          Sometimes the best weekends are the ones without a
+                          complicated plan.
+                        </p>
+
+                        <p className="text-[14px] leading-7 text-black/50">
+                          Go somewhere new. Read a book. Take a long walk. Put
+                          the phone away for a while and let the mind wander.
+                        </p>
+                      </div>
+
+                      <div className="my-8 h-px bg-black/[0.055]" />
+
+                      <p className="text-[13px] font-medium text-black/70">
+                        Things worth doing
+                      </p>
+
+                      <div className="mt-5 space-y-3.5">
+                        {[
+                          "Visit a new coffee shop",
+                          "Finish the book I'm reading",
+                          "Take some photos",
+                        ].map((item) => (
+                          <div
+                            key={item}
+                            className="flex items-center gap-3 text-[12px] text-black/45"
+                          >
+                            <div className="flex h-[18px] w-[18px] items-center justify-center rounded-full border border-black/12">
+                              <Check size={9} />
+                            </div>
+
+                            {item}
                           </div>
-
-                          {item}
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -264,129 +284,172 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Logos / Social Proof */}
-      <section className="border-y border-black/[0.05] bg-white px-6 py-12">
-        <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-6 sm:flex-row">
-          <p className="text-xs font-medium uppercase tracking-widest text-black/30">
-            Loved by people who value simplicity
+      {/* ========================= SOCIAL PROOF ========================= */}
+      <section className="border-y border-black/[0.055] bg-[#f8f8f5] px-6 py-10">
+        <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-5 sm:flex-row">
+          <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-black/25">
+            Made for people who value simplicity
           </p>
 
-          <div className="flex items-center gap-6 text-sm text-black/30">
+          <div className="flex flex-wrap justify-center items-center gap-4 text-[10px] font-medium uppercase tracking-wider text-black/30 sm:gap-6">
             <span>10,000+ notes</span>
-            <span className="h-1 w-1 rounded-full bg-black/20" />
-            <span>4.9/5 rating</span>
-            <span className="h-1 w-1 rounded-full bg-black/20" />
+            <span className="h-1 w-1 rounded-full bg-black/15" />
+            <span>4.9 / 5 rating</span>
+            <span className="h-1 w-1 rounded-full bg-black/15" />
             <span>Made with care</span>
           </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section id="features" className="px-6 py-28 sm:py-36">
+      {/* ========================= FEATURES ========================= */}
+      <section
+        id="features"
+        className="relative px-6 py-28 sm:py-36"
+      >
         <div className="mx-auto max-w-5xl">
           <div className="max-w-2xl">
-            <p className="mb-4 text-sm font-medium text-black/40">
+            <p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.2em] text-black/30">
               Everything you need
             </p>
 
-            <h2 className="text-4xl font-semibold tracking-[-0.045em] sm:text-5xl">
+            <h2 className="text-[42px] font-semibold leading-[1] tracking-[-0.055em] sm:text-[58px]">
               Simple by design.
               <br />
-              Powerful when needed.
+              <span className="text-black/25">
+                Powerful when needed.
+              </span>
             </h2>
 
-            <p className="mt-6 max-w-lg text-base leading-7 text-black/45">
-              No complicated menus. No distractions. Just a beautiful place
-              to capture your thoughts and keep them organized.
+            <p className="mt-7 max-w-lg text-[14px] leading-7 text-black/40">
+              No complicated menus. No distractions. Just a refined space
+              designed to help your thoughts stay clear and organized.
             </p>
           </div>
 
           <div className="mt-16 grid gap-4 md:grid-cols-3">
             <FeatureCard
-              icon={<Zap size={19} />}
+              icon={<Zap size={17} strokeWidth={1.8} />}
               title="Instant"
-              description="Open the app and start writing immediately. Everything feels fast and effortless."
+              description="Open the app and start writing immediately. Everything feels fast, quiet, and effortless."
             />
 
             <FeatureCard
-              icon={<Cloud size={19} />}
+              icon={<Cloud size={17} strokeWidth={1.8} />}
               title="Always synced"
-              description="Your notes stay up to date across all your devices, automatically."
+              description="Your notes stay beautifully synchronized across every device, automatically."
             />
 
             <FeatureCard
-              icon={<Lock size={19} />}
+              icon={<Lock size={17} strokeWidth={1.8} />}
               title="Private"
-              description="Your thoughts belong to you. Keep your personal notes safe and private."
+              description="Your thoughts belong to you. Keep your personal notes safe, private, and completely yours."
             />
           </div>
         </div>
       </section>
 
-      {/* Quote */}
-      <section id="about" className="bg-[#1d1d1f] px-6 py-28 text-white sm:py-36">
-        <div className="mx-auto max-w-4xl text-center">
-          <div className="mb-8 flex justify-center gap-1">
+      {/* ========================= QUOTE ========================= */}
+      <section
+        id="about"
+        className="relative overflow-hidden bg-[#171717] px-6 py-28 text-white sm:py-40"
+      >
+        {/* Ambient orbs */}
+        <div className="pointer-events-none absolute -left-40 top-1/2 h-80 w-80 -translate-y-1/2 rounded-full bg-white/[0.025] blur-[100px]" />
+        <div className="pointer-events-none absolute -right-40 top-1/3 h-96 w-96 rounded-full bg-white/[0.02] blur-[120px]" />
+
+        <div className="relative mx-auto max-w-4xl text-center">
+          <div className="mb-8 flex justify-center gap-1.5">
             {[1, 2, 3, 4, 5].map((star) => (
               <Star
                 key={star}
-                size={15}
+                size={13}
                 fill="currentColor"
-                className="text-white"
+                strokeWidth={0}
+                className="text-white/80"
               />
             ))}
           </div>
 
-          <blockquote className="text-3xl font-medium leading-tight tracking-[-0.035em] sm:text-5xl">
+          <blockquote className="text-[34px] font-medium leading-[1.08] tracking-[-0.045em] sm:text-[52px]">
             “Notetily. feels like the notes app I always wished I had.”
           </blockquote>
 
-          <p className="mt-7 text-sm text-white/40">— Alex Morgan</p>
+          <div className="mt-8 flex items-center justify-center gap-3">
+            <div className="h-7 w-7 rounded-full bg-white/10" />
+
+            <p className="text-[11px] font-medium text-white/35">
+              Alex Morgan
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section id="pricing" className="px-6 py-28 sm:py-36">
-        <div className="mx-auto max-w-4xl rounded-[32px] border border-black/[0.06] bg-white px-6 py-16 text-center shadow-sm sm:px-10">
-          <p className="text-sm font-medium text-black/40">
+      {/* ========================= CTA ========================= */}
+      <section
+        id="pricing"
+        className="relative px-6 py-28 sm:py-36"
+      >
+        <div className="absolute left-1/2 top-1/2 h-[500px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/70 blur-[120px]" />
+
+        <div className="relative mx-auto max-w-4xl overflow-hidden rounded-[32px] border border-black/[0.07] bg-white px-6 py-20 text-center shadow-[0_30px_90px_rgba(0,0,0,0.07)] sm:px-10">
+          <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-[#171717] text-white">
+            <span className="h-2.5 w-2.5 rounded-full bg-white" />
+          </div>
+
+          <p className="mt-6 text-[10px] font-semibold uppercase tracking-[0.2em] text-black/30">
             Start for free
           </p>
 
-          <h2 className="mx-auto mt-4 max-w-2xl text-4xl font-semibold tracking-[-0.045em] sm:text-5xl">
-            Make space for your ideas.
+          <h2 className="mx-auto mt-5 max-w-2xl text-[40px] font-semibold leading-[1] tracking-[-0.055em] sm:text-[56px]">
+            Make space for
+            <br />
+            <span className="text-black/25">your ideas.</span>
           </h2>
 
-          <p className="mx-auto mt-5 max-w-md text-sm leading-6 text-black/45">
-            Create your first note today. No credit card required.
+          <p className="mx-auto mt-6 max-w-md text-[13px] leading-6 text-black/40">
+            Create your first note today. A calmer way to capture the things
+            that matter.
           </p>
 
           <Link
             href="/preview"
-            className="mt-8 inline-flex h-12 items-center gap-2 rounded-full bg-[#1d1d1f] px-6 text-sm font-medium text-white transition hover:bg-black"
+            className="group mt-9 inline-flex h-12 items-center gap-2 rounded-full bg-[#171717] px-6 text-[12px] font-medium text-white shadow-[0_12px_30px_rgba(0,0,0,0.15)] transition duration-300 hover:-translate-y-0.5 hover:bg-black"
           >
             Get started
-            <ArrowRight size={16} />
+            <ArrowRight
+              size={14}
+              className="transition-transform group-hover:translate-x-0.5"
+            />
           </Link>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-black/[0.06] px-6 py-8">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 sm:flex-row">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold">Notetily.</span>
-          </div>
+      {/* ========================= FOOTER ========================= */}
+      <footer className="border-t border-black/[0.055] px-6 py-8">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-5 sm:flex-row">
+          <Link
+            href="/"
+            className="flex items-center gap-2"
+          >
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#171717]">
+              <div className="h-1.5 w-1.5 rounded-full bg-white" />
+            </div>
 
-          <p className="text-xs text-black/35">
+            <span className="text-[12px] font-semibold tracking-[-0.02em]">
+              Notetily.
+            </span>
+          </Link>
+
+          <p className="text-[10px] text-black/30">
             © 2026 Notetily. Made for your thoughts.
           </p>
 
-          <div className="flex gap-5 text-xs text-black/40">
-            <a href="#" className="hover:text-black">
+          <div className="flex gap-5 text-[10px] text-black/35">
+            <a href="#" className="transition hover:text-black">
               Privacy
             </a>
 
-            <a href="#" className="hover:text-black">
+            <a href="#" className="transition hover:text-black">
               Terms
             </a>
           </div>
@@ -396,7 +459,7 @@ export default function Home() {
   );
 }
 
-/* ---------------- Components ---------------- */
+/* ========================= COMPONENTS ========================= */
 
 function SidebarItem({
   title,
@@ -407,9 +470,9 @@ function SidebarItem({
 }) {
   return (
     <div
-      className={`rounded-lg px-3 py-2 text-sm ${active
-        ? "bg-black/[0.06] font-medium text-black"
-        : "text-black/45 hover:bg-black/[0.03]"
+      className={`rounded-xl px-3 py-2.5 text-[11px] transition ${active
+        ? "bg-black/[0.055] font-medium text-black"
+        : "text-black/40 hover:bg-black/[0.025] hover:text-black/70"
         }`}
     >
       {title}
@@ -430,16 +493,24 @@ function NoteItem({
 }) {
   return (
     <div
-      className={`rounded-xl p-3 ${active ? "bg-black/[0.055]" : "hover:bg-black/[0.03]"
+      className={`rounded-xl p-3 transition ${active
+        ? "bg-black/[0.055]"
+        : "hover:bg-black/[0.025]"
         }`}
     >
       <div className="flex items-start justify-between gap-2">
-        <p className="truncate text-sm font-medium">{title}</p>
+        <p className="truncate text-[11px] font-medium tracking-[-0.01em]">
+          {title}
+        </p>
 
-        <span className="shrink-0 text-[9px] text-black/25">{time}</span>
+        <span className="shrink-0 text-[8px] text-black/20">
+          {time}
+        </span>
       </div>
 
-      <p className="mt-1 truncate text-xs text-black/35">{description}</p>
+      <p className="mt-1 truncate text-[9px] text-black/30">
+        {description}
+      </p>
     </div>
   );
 }
@@ -454,14 +525,22 @@ function FeatureCard({
   description: string;
 }) {
   return (
-    <div className="group rounded-[24px] border border-black/[0.06] bg-white p-7 transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/[0.04]">
-      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-black/[0.05] transition group-hover:bg-black group-hover:text-white">
-        {icon}
+    <div className="group relative overflow-hidden rounded-[26px] border border-black/[0.06] bg-white p-7 shadow-[0_10px_40px_rgba(0,0,0,0.025)] transition duration-500 hover:-translate-y-1.5 hover:shadow-[0_25px_60px_rgba(0,0,0,0.07)]">
+      <div className="absolute right-0 top-0 h-28 w-28 rounded-full bg-black/[0.025] blur-3xl transition duration-500 group-hover:bg-black/[0.05]" />
+
+      <div className="relative">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-black/[0.06] bg-[#f7f7f5] text-black/70 transition duration-500 group-hover:bg-[#171717] group-hover:text-white">
+          {icon}
+        </div>
+
+        <h3 className="mt-8 text-[17px] font-semibold tracking-[-0.03em]">
+          {title}
+        </h3>
+
+        <p className="mt-3 text-[12px] leading-6 text-black/40">
+          {description}
+        </p>
       </div>
-
-      <h3 className="mt-7 text-lg font-semibold tracking-tight">{title}</h3>
-
-      <p className="mt-3 text-sm leading-6 text-black/45">{description}</p>
     </div>
   );
 }

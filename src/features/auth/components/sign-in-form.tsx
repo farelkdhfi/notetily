@@ -1,147 +1,209 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
-import { useRouter } from 'next/navigation'
-import { ArrowRight, Check } from 'lucide-react'
+import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { ArrowRight, LockKeyhole } from "lucide-react";
 
 import {
   SignInFormValues,
   signInSchema,
-} from '@/lib/schemas/auth'
+} from "@/lib/schemas/auth";
 
-import { login } from '@/lib/api/auth'
-import { createClient } from '@/lib/supabase/client'
+import { login } from "@/lib/api/auth";
+import { createClient } from "@/lib/supabase/client";
 
 export function SignInForm() {
-  const router = useRouter()
-  const supabase = createClient()
+  const router = useRouter();
+  const supabase = createClient();
+
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
-  })
-
-
+  });
 
   const mutation = useMutation({
     mutationFn: login,
 
     onSuccess: () => {
-      router.push('/notes')
-      router.refresh()
+      router.push("/notes");
+      router.refresh();
     },
-  })
+  });
 
   const onSubmit = (values: SignInFormValues) => {
-    mutation.mutate(values)
-  }
+    mutation.mutate(values);
+  };
 
   const handleGoogleSignIn = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
+      provider: "google",
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
       },
-    })
+    });
 
     if (error) {
-      console.error('Google sign in error:', error)
+      console.error("Google sign in error:", error);
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen bg-[#f7f7f5] text-[#1d1d1f]">
-      <div className="mx-auto flex min-h-screen max-w-7xl">
+    <main className="min-h-screen overflow-hidden bg-[#f5f5f2] text-[#171717]">
+      <div className="mx-auto flex min-h-screen max-w-[1600px] p-3 sm:p-4 lg:p-5">
+        {/* =========================================================
+            LEFT — BRAND EXPERIENCE
+        ========================================================= */}
+        <section className="relative hidden w-[52%] overflow-hidden rounded-[32px] bg-[#171717] text-white lg:flex">
+          {/* Ambient glow */}
+          <div className="pointer-events-none absolute -right-40 -top-40 h-[560px] w-[560px] rounded-full bg-white/[0.035] blur-[2px]" />
 
-        {/* Left - Brand / Visual */}
-        <div className="relative hidden w-1/2 overflow-hidden p-4 lg:block">
-          <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-[32px] bg-[#1d1d1f] p-10 text-white">
+          <div className="pointer-events-none absolute -bottom-48 -left-40 h-[500px] w-[500px] rounded-full bg-white/[0.025] blur-[100px]" />
 
-            {/* Decorative circle - single, subtle, matches landing page orb motif */}
-            <div className="pointer-events-none absolute -right-40 -top-40 h-[420px] w-[420px] rounded-full bg-white/[0.035]" />
+          {/* Fine grid */}
+          <div
+            className="pointer-events-none absolute inset-0 opacity-[0.035]"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.4) 1px, transparent 1px)",
+              backgroundSize: "80px 80px",
+            }}
+          />
 
+          <div className="relative z-10 flex w-full flex-col justify-between p-8 sm:p-10 xl:p-12">
             {/* Logo */}
-            <div className="relative z-10">
+            <div className="flex items-center justify-between">
               <Link
                 href="/"
-                className="text-[18px] font-bold tracking-[-0.02em] text-white"
+                className="group flex items-center gap-2.5"
               >
-                Notetily.
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#171717] transition-transform duration-300 group-hover:rotate-12">
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#171717]" />
+                </span>
+
+                <span className="text-[15px] font-semibold tracking-[-0.025em]">
+                  Notetily.
+                </span>
               </Link>
+
+              <span className="text-[9px] font-medium uppercase tracking-[0.2em] text-white/25">
+                Private workspace
+              </span>
             </div>
 
-            {/* Main message */}
-            <div className="relative z-10 max-w-lg">
-              <p className="mb-5 text-xs font-medium uppercase tracking-widest text-white/50">
-                Your thoughts, simplified.
-              </p>
+            {/* Main content */}
+            <div className="max-w-xl">
+              <div className="mb-7 flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-white/70" />
 
-              <h1 className="text-5xl font-semibold leading-[0.98] tracking-[-0.045em] text-white">
+                <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-white/40">
+                  Your thoughts, simplified
+                </span>
+              </div>
+
+              <h1 className="text-[52px] font-semibold leading-[0.94] tracking-[-0.065em] text-white xl:text-[68px]">
                 Everything you need.
                 <br />
-                Nothing you don&apos;t.
+                <span className="text-white/[0.28]">
+                  Nothing you don&apos;t.
+                </span>
               </h1>
 
-              <p className="mt-7 max-w-md text-[15px] leading-7 text-white/60">
+              <p className="mt-8 max-w-md text-[14px] leading-7 text-white/45">
                 Capture ideas, organize your thoughts, and keep everything
-                that matters in one simple place.
+                that matters in one quiet, beautifully designed space.
               </p>
+
+              {/* Mini benefits */}
+              <div className="mt-10 flex flex-wrap gap-2">
+                {["Fast", "Private", "Always synced"].map((item) => (
+                  <div
+                    key={item}
+                    className="rounded-full border border-white/[0.08] bg-white/[0.035] px-3.5 py-2 text-[9px] font-medium uppercase tracking-[0.12em] text-white/40 backdrop-blur-xl"
+                  >
+                    {item}
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Bottom */}
-            <div className="relative z-10 flex items-center justify-between text-xs text-white/40">
-              <span>© 2026 Notetily.</span>
-              <span>Simple. Focused. Yours.</span>
+            <div className="flex items-end justify-between border-t border-white/[0.07] pt-5">
+              <div>
+                <p className="text-[9px] uppercase tracking-[0.18em] text-white/25">
+                  © 2026 Notetily.
+                </p>
+              </div>
+
+              <p className="text-[9px] uppercase tracking-[0.18em] text-white/25">
+                Simple. Focused. Yours.
+              </p>
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Right - Login */}
-        <div className="flex w-full items-center justify-center px-6 py-12 lg:w-1/2 lg:px-16">
-          <div className="w-full max-w-md">
+        {/* =========================================================
+            RIGHT — SIGN IN
+        ========================================================= */}
+        <section className="relative flex w-full items-center justify-center px-5 py-10 sm:px-10 lg:w-[48%] lg:px-14 xl:px-20">
+          {/* Soft background glow */}
+          <div className="pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/70 blur-[120px]" />
 
+          <div className="relative w-full max-w-[410px]">
             {/* Mobile logo */}
-            <div className="mb-12 lg:hidden">
+            <div className="mb-16 lg:hidden">
               <Link
                 href="/"
-                className="text-[18px] font-bold tracking-[-0.02em] text-[#1d1d1f]"
+                className="flex items-center gap-2.5"
               >
-                Notetily.
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#171717]">
+                  <span className="h-2.5 w-2.5 rounded-full bg-white" />
+                </span>
+
+                <span className="text-[15px] font-semibold tracking-[-0.025em]">
+                  Notetily.
+                </span>
               </Link>
             </div>
 
             {/* Heading */}
             <div className="mb-10">
-              <p className="mb-3 text-xs font-medium uppercase tracking-widest text-black/40">
-                Welcome back
-              </p>
+              <div className="mb-5 flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#171717]" />
 
-              <h2 className="text-4xl font-semibold tracking-[-0.045em] text-[#1d1d1f]">
-                Sign in
+                <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-black/30">
+                  Welcome back
+                </span>
+              </div>
+
+              <h2 className="text-[46px] font-semibold leading-[0.95] tracking-[-0.06em]">
+                Sign in.
               </h2>
 
-              <p className="mt-3 text-sm leading-6 text-black/45">
-                Continue where you left off.
+              <p className="mt-5 max-w-sm text-[13px] leading-6 text-black/40">
+                Continue where you left off and get back to your thoughts.
               </p>
             </div>
 
-            {/* Form */}
+            {/* =====================================================
+                FORM
+            ===================================================== */}
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-6"
+              className="space-y-5"
             >
               {/* Email */}
               <div>
                 <label
                   htmlFor="email"
-                  className="mb-2 block text-sm font-medium text-[#1d1d1f]/80"
+                  className="mb-2.5 block text-[10px] font-semibold uppercase tracking-[0.14em] text-black/45"
                 >
-                  Email
+                  Email address
                 </label>
 
                 <input
@@ -149,12 +211,12 @@ export function SignInForm() {
                   type="email"
                   autoComplete="email"
                   placeholder="you@example.com"
-                  {...form.register('email')}
-                  className="h-12 w-full rounded-2xl border border-black/[0.08] bg-white px-4 text-sm text-[#1d1d1f] outline-none transition placeholder:text-black/25 focus:border-black/20 focus:ring-4 focus:ring-black/[0.04]"
+                  {...form.register("email")}
+                  className="h-[54px] w-full rounded-[16px] border border-black/[0.075] bg-white/75 px-4 text-[13px] text-[#171717] shadow-[0_6px_25px_rgba(0,0,0,0.025)] outline-none backdrop-blur-xl transition duration-300 placeholder:text-black/20 hover:border-black/[0.12] focus:border-black/[0.22] focus:bg-white focus:ring-4 focus:ring-black/[0.025]"
                 />
 
                 {form.formState.errors.email && (
-                  <p className="mt-2 text-xs text-red-500">
+                  <p className="mt-2 text-[11px] text-red-500/80">
                     {form.formState.errors.email.message}
                   </p>
                 )}
@@ -162,17 +224,17 @@ export function SignInForm() {
 
               {/* Password */}
               <div>
-                <div className="mb-2 flex items-center justify-between">
+                <div className="mb-2.5 flex items-center justify-between">
                   <label
                     htmlFor="password"
-                    className="text-sm font-medium text-[#1d1d1f]/80"
+                    className="text-[10px] font-semibold uppercase tracking-[0.14em] text-black/45"
                   >
                     Password
                   </label>
 
                   <button
                     type="button"
-                    className="text-xs font-medium text-black/40 transition hover:text-[#1d1d1f]"
+                    className="text-[10px] font-medium text-black/30 transition hover:text-black"
                   >
                     Forgot password?
                   </button>
@@ -183,12 +245,12 @@ export function SignInForm() {
                   type="password"
                   autoComplete="current-password"
                   placeholder="Enter your password"
-                  {...form.register('password')}
-                  className="h-12 w-full rounded-2xl border border-black/[0.08] bg-white px-4 text-sm text-[#1d1d1f] outline-none transition placeholder:text-black/25 focus:border-black/20 focus:ring-4 focus:ring-black/[0.04]"
+                  {...form.register("password")}
+                  className="h-[54px] w-full rounded-[16px] border border-black/[0.075] bg-white/75 px-4 text-[13px] text-[#171717] shadow-[0_6px_25px_rgba(0,0,0,0.025)] outline-none backdrop-blur-xl transition duration-300 placeholder:text-black/20 hover:border-black/[0.12] focus:border-black/[0.22] focus:bg-white focus:ring-4 focus:ring-black/[0.025]"
                 />
 
                 {form.formState.errors.password && (
-                  <p className="mt-2 text-xs text-red-500">
+                  <p className="mt-2 text-[11px] text-red-500/80">
                     {form.formState.errors.password.message}
                   </p>
                 )}
@@ -196,9 +258,10 @@ export function SignInForm() {
 
               {/* Server Error */}
               {mutation.isError && (
-                <div className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3">
-                  <p className="text-sm text-red-600">
-                    Invalid email or password.
+                <div className="rounded-[16px] border border-red-500/[0.1] bg-red-500/[0.035] px-4 py-3">
+                  <p className="text-[11px] leading-5 text-red-600/80">
+                    Invalid email or password. Please check your credentials
+                    and try again.
                   </p>
                 </div>
               )}
@@ -207,26 +270,33 @@ export function SignInForm() {
               <button
                 type="submit"
                 disabled={mutation.isPending}
-                className="group flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#1d1d1f] text-sm font-medium text-white shadow-lg shadow-black/10 transition hover:-translate-y-0.5 hover:bg-black active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+                className="group flex h-[54px] w-full items-center justify-center gap-2 rounded-full bg-[#171717] text-[12px] font-medium text-white shadow-[0_14px_35px_rgba(0,0,0,0.14)] transition duration-300 hover:-translate-y-0.5 hover:bg-black active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
               >
-                {mutation.isPending ? 'Signing in...' : 'Sign in'}
-                {!mutation.isPending && (
-                  <ArrowRight
-                    size={16}
-                    className="transition-transform group-hover:translate-x-0.5"
-                  />
+                {mutation.isPending ? (
+                  <span className="flex items-center gap-2">
+                    <span className="h-3.5 w-3.5 animate-spin rounded-full border border-white/30 border-t-white" />
+                    Signing in...
+                  </span>
+                ) : (
+                  <>
+                    Sign in
+                    <ArrowRight
+                      size={14}
+                      className="transition-transform duration-300 group-hover:translate-x-0.5"
+                    />
+                  </>
                 )}
               </button>
 
               {/* Divider */}
-              <div className="relative py-1">
+              <div className="relative py-2">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-black/[0.08]" />
+                  <div className="w-full border-t border-black/[0.06]" />
                 </div>
 
                 <div className="relative flex justify-center">
-                  <span className="bg-white px-4 text-xs text-black/30">
-                    OR
+                  <span className="bg-[#f5f5f2] px-4 text-[9px] font-medium uppercase tracking-[0.15em] text-black/25">
+                    Or continue with
                   </span>
                 </div>
               </div>
@@ -235,46 +305,61 @@ export function SignInForm() {
               <button
                 type="button"
                 onClick={handleGoogleSignIn}
-                className="flex h-12 w-full items-center justify-center gap-3 rounded-full border border-black/[0.08] bg-white text-sm font-medium text-[#1d1d1f] transition hover:-translate-y-0.5 hover:border-black/[0.15] hover:bg-black/[0.02] active:translate-y-0"
+                className="group flex h-[54px] w-full items-center justify-center gap-3 rounded-full border border-black/[0.075] bg-white/70 text-[12px] font-medium text-[#171717] shadow-[0_6px_25px_rgba(0,0,0,0.025)] backdrop-blur-xl transition duration-300 hover:-translate-y-0.5 hover:border-black/[0.13] hover:bg-white active:translate-y-0"
               >
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M21.805 10.023H12V14.023H17.657C16.825 16.657 14.657 18.023 12 18.023C8.686 18.023 6 15.337 6 12.023C6 8.709 8.686 6.023 12 6.023C13.53 6.023 14.923 6.596 15.985 7.533L18.828 4.69C17.02 3.023 14.634 2.023 12 2.023C6.477 2.023 2 6.5 2 12.023C2 17.546 6.477 22.023 12 22.023C17.523 22.023 22 17.546 22 12.023C22 11.356 21.932 10.705 21.805 10.023Z"
-                    fill="currentColor"
-                  />
-                </svg>
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#f5f5f2] transition group-hover:bg-white">
+                  <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M21.805 10.023H12V14.023H17.657C16.825 16.657 14.657 18.023 12 18.023C8.686 18.023 6 15.337 6 12.023C6 8.709 8.686 6.023 12 6.023C13.53 6.023 14.923 6.596 15.985 7.533L18.828 4.69C17.02 3.023 14.634 2.023 12 2.023C6.477 2.023 2 6.5 2 12.023C2 17.546 6.477 22.023 12 22.023C17.523 22.023 22 17.546 22 12.023C22 11.356 21.932 10.705 21.805 10.023Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </span>
 
                 Continue with Google
               </button>
             </form>
 
             {/* Register */}
-            <div className="mt-8 text-center">
-              <p className="text-sm text-black/40">
-                Don&apos;t have an account?{' '}
+            <div className="mt-9 text-center">
+              <p className="text-[11px] text-black/35">
+                Don&apos;t have an account?{" "}
                 <Link
                   href="/signup"
-                  className="font-medium text-[#1d1d1f] transition hover:underline"
+                  className="font-semibold text-[#171717] transition hover:underline"
                 >
                   Create one
                 </Link>
               </p>
             </div>
 
-            {/* Footer */}
-            <p className="mt-12 text-center text-xs leading-5 text-black/35">
+            {/* Security */}
+            <div className="mt-12 flex items-center justify-center gap-2">
+              <LockKeyhole
+                size={11}
+                strokeWidth={1.7}
+                className="text-black/25"
+              />
+
+              <p className="text-[9px] uppercase tracking-[0.12em] text-black/25">
+                Your data stays private
+              </p>
+            </div>
+
+            {/* Legal */}
+            <p className="mx-auto mt-4 max-w-xs text-center text-[9px] leading-5 text-black/25">
               By continuing, you agree to our Terms of Service and Privacy
               Policy.
             </p>
           </div>
-        </div>
+        </section>
       </div>
-    </div>
-  )
+    </main>
+  );
 }
